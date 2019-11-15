@@ -41,6 +41,17 @@ CREATE TABLE TestDB.dbo.MarcaCoche
 
 -- Drop table
 
+-- DROP TABLE TestDB.dbo.TipoCambio GO
+
+CREATE TABLE TestDB.dbo.TipoCambio
+(
+    id smallint IDENTITY(1,1) NOT NULL,
+    descripcion varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+    CONSTRAINT PK_TipoCambio PRIMARY KEY (id)
+) GO
+
+-- Drop table
+
 -- DROP TABLE TestDB.dbo.TipoCoche GO
 
 CREATE TABLE TestDB.dbo.TipoCoche
@@ -48,6 +59,17 @@ CREATE TABLE TestDB.dbo.TipoCoche
     id bigint IDENTITY(1,1) NOT NULL,
     nombre varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
     CONSTRAINT PK_TipoCoche PRIMARY KEY (id)
+) GO
+
+-- Drop table
+
+-- DROP TABLE TestDB.dbo.TipoCombustible GO
+
+CREATE TABLE TestDB.dbo.TipoCombustible
+(
+    id smallint IDENTITY(1,1) NOT NULL,
+    descripcion varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+    CONSTRAINT PK_TipoCombustible PRIMARY KEY (id)
 ) GO
 
 -- Drop table
@@ -64,14 +86,28 @@ CREATE TABLE TestDB.dbo.Coche
     idTipo bigint NOT NULL,
     imgUrl varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     slug varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+    idCombustible smallint NULL,
+    idCambio smallint NULL,
+    descripcion varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     CONSTRAINT PK_Modelo PRIMARY KEY (id),
     CONSTRAINT FK_266 FOREIGN KEY (idMarca) REFERENCES TestDB.dbo.MarcaCoche(id),
-    CONSTRAINT FK_269 FOREIGN KEY (idTipo) REFERENCES TestDB.dbo.TipoCoche(id)
+    CONSTRAINT FK_269 FOREIGN KEY (idTipo) REFERENCES TestDB.dbo.TipoCoche(id),
+    CONSTRAINT FK_300 FOREIGN KEY (idCombustible) REFERENCES TestDB.dbo.TipoCombustible(id),
+    CONSTRAINT FK_304 FOREIGN KEY (idCambio) REFERENCES TestDB.dbo.TipoCambio(id)
 ) GO
 CREATE NONCLUSTERED INDEX fkIdx_266 ON dbo.Coche (  idMarca ASC  )  
 	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
 	 ON [PRIMARY ]  GO
 CREATE NONCLUSTERED INDEX fkIdx_269 ON dbo.Coche (  idTipo ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ]  GO
+CREATE NONCLUSTERED INDEX fkIdx_300 ON dbo.Coche (  idCombustible ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ]  GO
+CREATE NONCLUSTERED INDEX fkIdx_301 ON dbo.Coche (  idCambio ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ]  GO
+CREATE NONCLUSTERED INDEX fkIdx_304 ON dbo.Coche (  idCambio ASC  )  
 	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
 	 ON [PRIMARY ]  GO
 
@@ -108,6 +144,7 @@ CREATE TABLE TestDB.dbo.Oferta
     activo int NOT NULL,
     idCoche bigint NOT NULL,
     slug varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+    descripcion varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     CONSTRAINT PK_Oferta PRIMARY KEY (id),
     CONSTRAINT FK_229 FOREIGN KEY (idCoche) REFERENCES TestDB.dbo.Coche(id)
 ) GO
@@ -133,6 +170,26 @@ CREATE NONCLUSTERED INDEX fkIdx_207 ON dbo.PreCliente (  idModelo ASC  )
 
 -- Drop table
 
+-- DROP TABLE TestDB.dbo.RelacionesTablas GO
+
+CREATE TABLE TestDB.dbo.RelacionesTablas
+(
+    id bigint IDENTITY(1,1) NOT NULL,
+    idOfertaPrincipal bigint NOT NULL,
+    idOfertaRelacionada bigint NOT NULL,
+    CONSTRAINT PK_RelacionesTablas PRIMARY KEY (id),
+    CONSTRAINT FK_302 FOREIGN KEY (idOfertaPrincipal) REFERENCES TestDB.dbo.Oferta(id),
+    CONSTRAINT FK_303 FOREIGN KEY (idOfertaRelacionada) REFERENCES TestDB.dbo.Oferta(id)
+) GO
+CREATE NONCLUSTERED INDEX fkIdx_302 ON dbo.RelacionesTablas (  idOfertaPrincipal ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ]  GO
+CREATE NONCLUSTERED INDEX fkIdx_303 ON dbo.RelacionesTablas (  idOfertaRelacionada ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ]  GO
+
+-- Drop table
+
 -- DROP TABLE TestDB.dbo.Cliente GO
 
 CREATE TABLE TestDB.dbo.Cliente
@@ -148,7 +205,7 @@ CREATE TABLE TestDB.dbo.Cliente
     apellido2 varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     dniNumero varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     fechaNacimiento varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-    provinciaNacimiento varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+    lugarNacimiento varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     provinciaDomicilio varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     codigoPostal int NULL,
     estadoCivil varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -160,6 +217,7 @@ CREATE TABLE TestDB.dbo.Cliente
     estadoRegistro bigint NULL,
     activo int NULL,
     fechaPromesaBorrado date NULL,
+    movilVerificado smallint NULL,
     CONSTRAINT PK_Cliente PRIMARY KEY (id),
     CONSTRAINT FK_214 FOREIGN KEY (idPreCliente) REFERENCES TestDB.dbo.PreCliente(id),
     CONSTRAINT FK_294 FOREIGN KEY (estadoRegistro) REFERENCES TestDB.dbo.DescripcionEstados(id)
@@ -203,7 +261,7 @@ CREATE TABLE TestDB.dbo.Pedido
     domicilioEntrega varchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     cuentaBancaria varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
     documento varbinary NULL,
-    estado int NULL,
+    finalizado int NULL,
     idUsuario bigint NULL,
     idOferta bigint NULL,
     estadoPedido bigint NULL,

@@ -1,0 +1,7 @@
+-- Revisar relacion PreCliente con oferta
+-- Revisar tipo documento subido en el registro
+-- Direccion entrega separar en campos o todo a saco
+-- Guardar justificante bancario?
+-- Documento se guarda en la DB?
+-- Plazo de entrega estimado
+-- Revisar codigo de acceso: se envia cada vez que logueas o es una contraseña?
